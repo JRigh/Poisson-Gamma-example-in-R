@@ -60,6 +60,7 @@ plot(p, dgamma(p, 10, 1), col = 2, lwd = 2, main = 'Ga(11.27, 1)', type = 'l')
 # 3. Density plots of posteriors
 
 # priors
+alpha1 = 2; beta1 = 2
 prior1 = lambda^(alpha1 - 1) * exp(- lambda * beta1) ; prior1 = prior1 / sum(prior1)
 
 # data
@@ -73,39 +74,39 @@ lp1 = likelihood1 * prior1 ; posterior1 = lp1 / sum(lp1)
 set.seed(2023)
 data1 = rpois(n = n, lambda = lambda1)
 meandata1 = mean(data1) # [1] 0.85
-alpha_posterior = round(alpha1 + n*mean(data1), 2) # 25
-beta_posterior = n + beta1 # 28
+alpha_posterior = round(alpha1 + n*mean(data1), 2) # 19
+beta_posterior = n + beta1 # 22
 
 # plots
 ylim = c(0, max(c(prior1, posterior1, likelihood1 / sum(likelihood1))))
 xlim = range(lambda)
 plot(lambda, prior1, type='l', xlim=xlim, ylim=ylim, col="red", xlab='lambda', ylab='', yaxt='n',
-     main = 'Posterior distribution in blue - Ga(25, 28)')
+     main = 'Posterior distribution in blue - Ga(19, 22)')
 par(new=T) 
 plot(lambda, likelihood1/sum(likelihood1), type='l', xlim=xlim, ylim=ylim, col="black", xlab='', ylab='', yaxt='n')
 par(new=T)
 plot(lambda, posterior1, type='l', xlim=xlim, ylim=ylim, col="blue", xlab='', ylab='', yaxt='n')
-legend("topright", c("Ga(8,8) prior", "Example of a scaled likelihood P(1)", "Ga(25,28) posterior"), lty=1, col=c("red", "black", "blue"))
+legend("topright", c("Ga(2,2) prior", "Example of a scaled likelihood P(1)", "Ga(19,22) posterior"), lty=1, col=c("red", "black", "blue"))
 
 # Posterior mean, posterior variance and 95% Credible Interval including the sample median
 set.seed(2023)
 data1 = rpois(n = n, lambda = lambda1)
-alpha_posterior = round(alpha1 + n*mean(data1), 2) # 25
-beta_posterior = n + beta1 # 28
+alpha_posterior = round(alpha1 + n*mean(data1), 2) # 19
+beta_posterior = n + beta1 # 22
 
 pmean = alpha_posterior / beta_posterior
 pmean
-# [1] 0.8928571
+# [1] 0.8636364
 
 pvariance = alpha_posterior / beta_posterior^2
 pvariance
-# [1] 0.03188776
+# [1] 0.0392562
 
 # 95% Credible Interval obtained by direct sampling (simulation)
 set.seed(2023)
-quantile(rgamma(n = 10^8, alpha_posterior, beta_posterior), probs = c(0.025, 0.5, 0.975))
-#      2.5%       50%     97.5% 
-# 0.5778259 0.8810029 1.2753647 
+round(quantile(rgamma(n = 10^8, alpha_posterior, beta_posterior), probs = c(0.025, 0.5, 0.975)),4)
+#   2.5%    50%  97.5% 
+# 0.5200 0.8486 1.2931 
 
 # Posterior mean obtained from direct sampling
 set.seed(2023)
