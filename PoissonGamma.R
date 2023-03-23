@@ -73,6 +73,13 @@ likelihood1 = dpois(lambda1, lambda)
 lp1 = likelihood1 * prior1 ; posterior1 = lp1 / sum(lp1)
 set.seed(2023)
 data1 = rpois(n = n, lambda = lambda1)
+
+# save a copy of entire dataset, training and testing datasets in .csv
+write.csv(data1, 
+          "C:/Users/julia/OneDrive/Desktop/github/3. PoissonGamma/Poisson_data.csv",
+          row.names = FALSE)
+
+# posterior mean and parameters
 meandata1 = mean(data1) # [1] 0.85
 alpha_posterior = round(alpha1 + n*mean(data1), 2) # 19
 beta_posterior = n + beta1 # 22
@@ -89,15 +96,41 @@ plot(lambda, posterior1, type='l', xlim=xlim, ylim=ylim, col="blue", xlab='', yl
 legend("topright", c("Ga(2,2) prior", "Example of a scaled likelihood P(1)", "Ga(19,22) posterior"), lty=1, col=c("red", "black", "blue"))
 
 # ggplot
-# plot of the Jeffreys prior Gamma(1/2, 0)
-ggplot(data=data_frame,aes(x=lambda))+
-  stat_function(fun=dgamma, args=list(shape=1/2, scale=0.01), 
-                colour = "darkred", linetype = "solid", lwd = 1.2) +
-  stat_function(fun=dgamma, linetype="dashed", args=list(shape=1/2, scale=1/2),
-                colour = "black", linetype = "dashed", lwd = 1.2) +
-  xlim(range(lambda)) + ylim(0, max(c(prior1, posterior1, likelihood1 / sum(likelihood1)))) +
-  labs(title = 'Jeffreys Gamma prior',
-       subtitle = 'in red Gamma(1/2, 0.01) because Gamma(1/2, 0) is impossible to plot. Gamma(1/2, 1/2) prior in dashed black',
+
+# priors
+alpha1 = 2; beta1 = 2
+lambda <- seq(0,10,length=1000)
+prior1 = lambda^(alpha1 - 1) * exp(- lambda * beta1) ; prior1 = prior1 / sum(prior1)
+
+# data
+n = 20; lambda1 = 1 # Poisson likelihood parameters
+
+# likelihood
+likelihood1 = dpois(lambda1, lambda)
+
+# posterior
+lp1 = likelihood1 * prior1 ; posterior1 = lp1 / sum(lp1)
+
+set.seed(2023)
+data1 = rpois(n = n, lambda = lambda1)
+meandata1 = mean(data1) # [1] 0.85
+alpha_posterior = round(alpha1 + n*mean(data1), 2) # 19
+beta_posterior = n + beta1 # 22
+
+# dataframe
+data_frame <- data.frame('lambda' = lambda, 'prior' = prior1, 'likelihood' = likelihood1, 'posterior' = posterior1)
+
+ggplot(data=data_frame) +
+  geom_line(aes(x = lambda, y = prior1, color = 'Ga(2,2) prior'), lwd = 1.2) +
+  geom_line(aes(x = lambda, y = likelihood1/sum(likelihood1), 
+                color = 'Scaled likelihood P(1)'), lwd = 1.2) +
+  geom_line(aes(x = lambda, y = posterior1, color = 'Ga(19,22) posterior'), lwd = 1.2) +
+  xlim(0, 10) + ylim(0, max(c(prior1, posterior1, likelihood1 / sum(likelihood1)))) +
+  scale_color_manual(name = "Distributions", values = c("Ga(2,2) prior" = "darkred", 
+                                                        "Scaled likelihood P(1)" = "black",
+                                                        'Ga(19,22) posterior' = 'darkblue')) +
+  labs(title = 'Posterior distribution in blue - Ga(19, 22)',
+       subtitle = 'Working example data',
        y="density", x="lambda") +
   theme(axis.text=element_text(size=8),
         axis.title=element_text(size=8),
@@ -152,6 +185,31 @@ ggplot(data=data_frame,aes(x=lambda))+
         plot.subtitle=element_text(size=10, face="italic", color="darkred"),
         panel.background = element_rect(fill = "white", colour = "grey50"),
         panel.grid.major = element_line(colour = "grey90"))
+
+# Posterior mean, posterior variance and 95% Credible Interval including the sample median, with prior Ga(1/2, 1/2)
+set.seed(2023)
+data1 = rpois(n = n, lambda = lambda1)
+alpha_posterior = round(alpha1 + n*mean(data1), 2) # 17.5
+beta_posterior = n + beta1 # 20.5
+
+pmean = alpha_posterior / beta_posterior
+pmean
+# [1] 0.8536585
+
+pvariance = alpha_posterior / beta_posterior^2
+pvariance
+# [1] 0.04164188
+
+# 95% Credible Interval obtained by direct sampling (simulation)
+set.seed(2023)
+round(quantile(rgamma(n = 10^8, alpha_posterior, beta_posterior), probs = c(0.025, 0.5, 0.975)),4)
+#   2.5%    50%  97.5% 
+# 0.5200 0.8486 1.2931 
+
+# Posterior mean obtained from direct sampling
+set.seed(2023)
+mean(rgamma(n = 10^8, alpha_posterior, beta_posterior))
+# [1] 0.8928863
 
 #----
 # end

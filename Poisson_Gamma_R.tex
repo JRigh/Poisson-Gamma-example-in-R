@@ -543,7 +543,7 @@ In our case, we have that
 
 $$
 \begin{align*}
-p( \lambda   \mid x  ) & \propto  \underbrace{ \lambda^{\sum_{i=1}^{n}x_{i}} e^{-10\theta}}_{\text{Poisson  Likelihood}} \    \underbrace{ p(\lambda)}_{\text{ Prior}} \\
+p( \lambda   \mid x  ) & \propto  \underbrace{ \lambda^{\sum_{i=1}^{n}x_{i}} e^{-10\lambda}}_{\text{Poisson  Likelihood}} \    \underbrace{ p(\lambda)}_{\text{ Prior}} \\
 & \propto   \lambda^{17} e^{-20\lambda} \  \lambda^{ -1/2 }   e^{- 1/2 \lambda  } \\
 & \propto   \lambda^{-16.5} \    e^{-  19.5 \lambda  } \\
 \end{align} 
@@ -551,7 +551,7 @@ $$
 
 \vspace{5}
 \noindent
-and we recognize the functional form of a Gamma density, that is $Gamma(\alpha = 17.5, \beta = 20.5)$. The posterior mean is given by $\alpha / \beta = 0.8537$.
+and we recognize the functional form of a Gamma density, that is $Gamma(\alpha = 17.5, \beta = 19.5)$. The posterior mean is given by $\alpha / \beta = 0.8974$.
 
 
 \par
@@ -585,6 +585,13 @@ So, combining modeling and simulations, we are now able to generalize and infer 
 
 
 \end{frame}
+
+
+
+
+
+
+
 
 \begin{frame}[ fragile]{}
 \frametitle{Further reading and code}
