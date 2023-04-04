@@ -12,6 +12,6 @@ We also show how to derive the Jeffreys prior, which is an improper prior but ha
 
 Then using we show an example of multi-stage Gibbs sampling for a Poisson process with Gamma prior.
 
-![plotR2](/assets/plotR2.png)
+![Rplot01.](/assets/Rplot01.png)
 
 Python implementation will be added soon.
